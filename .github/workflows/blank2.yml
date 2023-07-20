@@ -17,7 +17,7 @@ jobs:
             const { data } = await github.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'triggered_workflow.yml',  # Replace with the workflow filename
+              workflow_id: 'blank.yml',  # Replace with the workflow filename
               ref: 'main',  # Replace with the branch name you want to run Triggered Workflow on
               inputs: {
                 branch: 'main'  # Replace with any input parameters needed for Triggered Workflow
