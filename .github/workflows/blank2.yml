@@ -11,19 +11,16 @@ jobs:
 
     steps:
       - name: Trigger the Triggered Workflow
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
-            const { data } = await github.actions.createWorkflowDispatch({
+            github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'blank.yml',
+              workflow_id: 'test.yml',
               ref: 'main',
-              inputs: {
-                branch: 'main'
-              }
-            });
-            console.log('Triggered the workflow with ID:', data.id);
+            })
+             # console.log('Triggered the workflow with ID:', data.id);
 
       - name: Wait for the Triggered Workflow to complete
         id: wait_for_trigger
