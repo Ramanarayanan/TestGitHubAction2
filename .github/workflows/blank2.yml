@@ -1,0 +1,42 @@
+name: Current Workflow
+
+on:
+  push:  # Define the event that triggers this workflow (e.g., push event)
+    branches:
+      - main  # Replace with your desired branch name
+
+jobs:
+  trigger_and_wait:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger the Triggered Workflow
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { data } = await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'triggered_workflow.yml',  # Replace with the workflow filename
+              ref: 'main',  # Replace with the branch name you want to run Triggered Workflow on
+              inputs: {
+                branch: 'main'  # Replace with any input parameters needed for Triggered Workflow
+              }
+            });
+            console.log('Triggered the workflow with ID:', data.id);
+
+      - name: Wait for the Triggered Workflow to complete
+        id: wait_for_trigger
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/actions/runs/${{ github.event.workflow.id }}
+          repository: ${{ github.repository }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Continue Current Workflow on success
+        if: steps.wait_for_trigger.outputs.status == 'completed' && steps.wait_for_trigger.outputs.conclusion == 'success'
+        run: |
+          # Your actions when the triggered workflow is successful.
+          echo "Triggered Workflow was successful! Continue with this workflow."
+        # Add additional steps here if you want to do something when the triggered workflow is not successful.
