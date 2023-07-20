@@ -1,0 +1,17 @@
+name: Triggered Workflow
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+    inputs:
+      branch:  # Optional input to specify the branch (you can customize this as needed)
+        description: 'Branch to run the workflow on'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Add your workflow steps here
+      - name: Example Step 1
+        run: echo "This is an example step in the Triggered Workflow."
